@@ -1,4 +1,4 @@
-LOCAL_PATH:= $(call my-dir)
+mLOCAL_PATH:= $(call my-dir)
 
 common_src_files := \
 	VolumeManager.cpp \
@@ -11,6 +11,8 @@ common_src_files := \
 	Process.cpp \
 	Ext4.cpp \
 	Fat.cpp \
+	Ntfs.cpp \
+	Exfat.cpp \
 	Loop.cpp \
 	Devmapper.cpp \
 	ResponseCode.cpp \
