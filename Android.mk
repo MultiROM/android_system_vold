@@ -1,4 +1,4 @@
-mLOCAL_PATH:= $(call my-dir)
+LOCAL_PATH:= $(call my-dir)
 
 common_src_files := \
 	VolumeManager.cpp \

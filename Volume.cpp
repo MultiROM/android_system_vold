@@ -46,6 +46,7 @@
 #include "ResponseCode.h"
 #include "Ext4.h"
 #include "Fat.h"
+#include "Ntfs.h"
 #include "Exfat.h"
 #include "Process.h"
 #include "cryptfs.h"

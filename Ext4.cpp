@@ -113,7 +113,7 @@ int Ext4::check(const char *fsPath) {
     return 0;
 }
 
-int Ext4::format(const char *fsPath) {
+int Ext4::format(const char *fsPath, const char *mountpoint) {
     int fd;
     const char *args[5];
     int rc;
