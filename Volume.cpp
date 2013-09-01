@@ -244,9 +244,9 @@ int Volume::createDeviceNode(const char *path, int major, int minor) {
     return 0;
 }
 
-int Volume::formatVol(const char* fstype) {
+int Volume::formatVol() {
 
-    const char* fstype2 = NULL;
+    char* fstype = NULL;
 
     if (getState() == Volume::State_NoMedia) {
         errno = ENODEV;
@@ -286,38 +286,21 @@ int Volume::formatVol(const char* fstype) {
     sprintf(devicePath, "/dev/block/vold/%d:%d",
             MAJOR(partNode), MINOR(partNode));
 
-#ifdef VOLD_EMMC_SHARES_DEV_MAJOR
-    // If emmc and sdcard share dev major number, vold may pick
-    // incorrectly based on partition nodes alone, formatting
-    // the wrong device. Use device nodes instead.
-    dev_t deviceNodes;
-    getDeviceNodes((dev_t *) &deviceNodes, 1);
-    sprintf(devicePath, "/dev/block/vold/%d:%d", MAJOR(deviceNodes), MINOR(deviceNodes));
-#endif
-
-    if (fstype == NULL) {
-        fstype2 = getFsType((const char*)devicePath);
-    } else {
-        fstype2 = fstype;
-    }
-
     if (mDebug) {
-        SLOGI("Formatting volume %s (%s) as %s", getLabel(), devicePath, fstype2);
+        SLOGI("Formatting volume %s (%s)", getLabel(), devicePath);
     }
 
-    if (strcmp(fstype2, "exfat") == 0) {
-        ret = Exfat::format(devicePath);
-    } else if (strcmp(fstype2, "ext4") == 0) {
-        ret = Ext4::format(devicePath, NULL);
-    } else if (strcmp(fstype2, "ntfs") == 0) {
-        ret = Ntfs::format(devicePath);
-    } else {
-        ret = Fat::format(devicePath, 0);
-    }
-
-    if (ret < 0) {
+    fstype = getFsType((const char*)devicePath);
+    if (strcmp(fstype, "exfat") == 0) {
+        if (Exfat::format(devicePath)) {
+            SLOGE("Failed for format (%s) as exfat", strerror(errno));
+        }
+    } else if (Fat::format(devicePath, 0)) {
         SLOGE("Failed to format (%s)", strerror(errno));
+        goto err;
     }
+
+    ret = 0;
 
 err:
     setState(Volume::State_Idle);

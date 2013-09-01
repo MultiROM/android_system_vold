@@ -167,7 +167,7 @@ int VolumeManager::listVolumes(SocketClient *cli) {
     return 0;
 }
 
-int VolumeManager::formatVolume(const char *label, const char *fstype) {
+int VolumeManager::formatVolume(const char *label) {
     Volume *v = lookupVolume(label);
 
     if (!v) {
@@ -180,7 +180,7 @@ int VolumeManager::formatVolume(const char *label, const char *fstype) {
         return -1;
     }
 
-    return v->formatVol(fstype);
+    return v->formatVol();
 }
 
 int VolumeManager::getObbMountPath(const char *sourceFile, char *mountPath, int mountPathLen) {
